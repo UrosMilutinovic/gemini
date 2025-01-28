@@ -3,6 +3,7 @@ import os
 from dotenv import load_dotenv
 import tkinter as tk 
 from tkinter import messagebox
+from tkinter import font
 
 # Load environment variables from .env file
 load_dotenv()
@@ -33,11 +34,11 @@ def generate_response(user_message, harvey_talk):
 
 def switch_screen(screen):
     if screen == "start":
-        start_frame.pack()
+        start_frame.pack(fill="both", expand=True)
         chat_frame.pack_forget()
     else:
         start_frame.pack_forget()
-        chat_frame.pack()
+        chat_frame.pack(fill="both", expand=True)
 
 def start_chat(harvey):
     global harvey_talk
@@ -62,40 +63,42 @@ def send_message():
 
 root = tk.Tk()
 root.title("Chat with Harvey or Mike from Suits")
-root.geometry("600x400")
+root.geometry("600x800")  # Adjust window size here
 root.configure(bg="#333")
 
 harvey_talk = True
 user_input = tk.StringVar()
 
+# Custom font
+custom_font = font.Font(family="Helvetica", size=16, weight="bold")
+
 # Start screen
 start_frame = tk.Frame(root, bg="#333")
-start_frame.pack()
+start_frame.pack(fill="both", expand=True)
 
-harvey_button = tk.Button(start_frame, text="Talk to Harvey", command=lambda: start_chat(True), bg="#555", fg="#fff")
-mike_button = tk.Button(start_frame, text="Talk to Mike", command=lambda: start_chat(False), bg="#555", fg="#fff")
+harvey_button = tk.Button(start_frame, text="Talk to Harvey", command=lambda: start_chat(True), bg="#555", fg="#fff", width=15, font=custom_font)
+mike_button = tk.Button(start_frame, text="Talk to Mike", command=lambda: start_chat(False), bg="#555", fg="#fff", width=15, font=custom_font)
 
-harvey_button.pack(pady=10)
-mike_button.pack(pady=10)
+harvey_button.pack(side="left", padx=10, pady=10)
+mike_button.pack(side="right", padx=10, pady=10)
 
 # Chat screen
 chat_frame = tk.Frame(root, bg="#333")
 
-user_entry = tk.Entry(chat_frame, textvariable=user_input, bg="#555", fg="#fff")
-user_entry.pack(fill="x", padx=10, pady=5)
+switch_button = tk.Button(chat_frame, text="Switch", command=lambda: switch_screen("start"), bg="#555", fg="#fff", height=1, font=custom_font)
+switch_button.pack(anchor="nw", padx=10, pady=5)
 
-send_button = tk.Button(chat_frame, text="Send", command=send_message, bg="#555", fg="#fff")
-send_button.pack(pady=5)
+response_box = tk.Text(chat_frame, bg="#333", fg="#fff", state='disabled', wrap='word', height=30, width=80)  # Increase height here
+response_box.pack(expand=True, fill="both", padx=10, pady=5)
 
-switch_button = tk.Button(chat_frame, text="Switch", command=lambda: switch_screen("start"), bg="#555", fg="#fff")
-switch_button.pack(pady=5)
+bottom_frame = tk.Frame(chat_frame, bg="#333")
+bottom_frame.pack(side="bottom", fill="x", padx=10, pady=10)  # Move to the bottom
 
-response_box = tk.Text(chat_frame, bg="#333", fg="#fff", state='disabled', wrap='word')
-response_box.pack(fill="both", padx=10, pady=5)
+user_entry = tk.Entry(bottom_frame, textvariable=user_input, bg="#555", fg="#fff")
+user_entry.pack(side="left", fill="x", expand=True)
+
+send_button = tk.Button(bottom_frame, text="Send", command=send_message, bg="#555", fg="#fff", height=1, font=custom_font)
+send_button.pack(side="right", padx=5)
 
 switch_screen("start")
 root.mainloop()
-
-
-
-
